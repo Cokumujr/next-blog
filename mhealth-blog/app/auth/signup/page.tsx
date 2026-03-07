@@ -6,13 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form"; 
+import { toast } from "sonner";
+import * as z from "zod/v3";
 
 
 
 
 export default function SignUpPage() {
+
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(signUpSchema),
@@ -23,16 +32,32 @@ export default function SignUpPage() {
     }
   });
 
-  function onSubmit() {
-    console.log("Form submitted");
+   function onSubmit(data: z.infer<typeof signUpSchema>) {
+
+    startTransition(async() => { 
+      await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        fetchOptions: {
+            onSuccess: () => {
+                toast.success("Account created successfully");
+                router.push("/");
+            },
+            onError: (error) => {
+                toast.error(error.error.message || "Failed to create account");
+            }
+        }
+      });
+
+    });
   }
 
   return (
-    <div >
-
+      <>
       <Card>
-        <CardHeader>
-            <CardTitle>Sign Up Form</CardTitle>
+        <CardHeader className="text-center">
+            <CardTitle className="text-lg" >Sign Up</CardTitle>
         <CardDescription>
           Create an   Account to get Started
         </CardDescription>
@@ -81,12 +106,21 @@ export default function SignUpPage() {
                 )}
               />
 
-                <Button>Sign Up</Button>
+              <Button disabled={isPending}>
+                {isPending ?
+                  <>
+                    <Loader2 className="mr-2" />
+                    <span>Creating Account...</span>
+                  </> : "Sign Up"}
+              </Button>
             </FieldGroup>
 
           </form>
         </CardContent>
       </Card>
-    </div>
+      
+      </>
+
+    
   )
 }
