@@ -19,7 +19,7 @@ export function Navbar() {
             <div className="flex items-center space-x-2">
                 <Link href="/">
                 <h1 className="text-3xl font-bold">
-                <span className="text-blue-500">Nadra</span>
+                <span className="text-primary">Nadra</span>
                 </h1>
                 </Link>
             </div>
@@ -29,7 +29,7 @@ export function Navbar() {
                         Home
                     </Link>
                     <Link href="/blog" className={ buttonVariants({ variant: "ghost" ,size:"lg"})}>
-                        Blog
+                        Blogs
                     </Link>
                     <Link href="/create" className={ buttonVariants({ variant: "ghost",size:"lg" })}>
                         Create

@@ -39,7 +39,7 @@ export default async function RootLayout({
             <ConvexClientProvider initialToken={token} >
               {children}
             </ConvexClientProvider>
-            <Toaster closeButton />
+            <Toaster closeButton  expand={true} visibleToasts={3}/>
 
           </main>
         </ThemeProvider>
