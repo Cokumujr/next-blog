@@ -1,7 +1,9 @@
 import { CommentsSection } from "@/components/CommentsSection";
+import { PostPresence } from "@/components/PostPresence";
 import { buttonVariants } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { getToken } from "@/lib/auth-server";
 import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
 import { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
@@ -35,10 +37,13 @@ export async function generateMetadata(
 
 export default async function blogPostPage({ params }: PostPageProps) {
     const { postId } = await params;
+    const token = await getToken();
 
-    const [post, preloadedComments] = await Promise.all([
-        await fetchQuery(api.posts.getPostById, { postId }),
-        await preloadQuery(api.comments.getCommentsByPostById, { postId })
+
+    const [post, preloadedComments,userId] = await Promise.all([
+         fetchQuery(api.posts.getPostById, { postId }),
+         preloadQuery(api.comments.getCommentsByPostById, { postId }),
+        fetchQuery(api.presence.getUserId, {} , {token})
     ])
    
     
@@ -71,10 +76,15 @@ export default async function blogPostPage({ params }: PostPageProps) {
 
             <div className="prose max-w-none space-y-4 ">
                 <h1 className="text-4xl font-bold mb-4 tracking-tight text-foreground">{post.title}</h1>
+                <div className="flex items-center justify-between mb-6">
 
                 <p className="text-muted-foreground text-sm">
                     Posted on: {new Date(post._creationTime).toLocaleDateString("en-GB")} 
                 </p>
+                {userId && <PostPresence roomId={post._id} userId={userId} />}
+
+                </div>
+
 
                 
 
