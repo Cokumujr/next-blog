@@ -6,7 +6,14 @@ import { cn } from "@/lib/utils";
 import { fetchQuery } from "convex/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next/types";
 import { Suspense } from "react";
+
+
+export const metadata: Metadata = {
+  title: 'Nadra Blogs',
+  description: "Here you'll find a collection of articles on various topics related to mental health and addiction recovery."
+}
 
 export default function blogListPage() {
   return (

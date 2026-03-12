@@ -1,10 +1,8 @@
 "use server";
 
 import { getToken } from "@/lib/auth-server";
-import { BlogPostSchema } from "./schemas/blog";
 import { fetchMutation } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { z } from "zod/v3";
 import { Id } from "@/convex/_generated/dataModel";
 
 type PostSchema = {

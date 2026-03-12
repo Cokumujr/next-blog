@@ -3,12 +3,13 @@
 
 import { signUpSchema } from "@/app/schemas/auth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form"; 
@@ -117,6 +118,12 @@ export default function SignUpPage() {
 
           </form>
         </CardContent>
+        <CardFooter>
+                 <p className="text-center mx-auto">
+                  Already have an account? <Link href="/auth/login" className="text-primary hover:underline"> Log In</Link>
+                  </p>
+                  
+                </CardFooter>
       </Card>
       
       </>

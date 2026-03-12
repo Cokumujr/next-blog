@@ -3,17 +3,20 @@
 
 import { loginSchema } from "@/app/schemas/auth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { FieldGroup, Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod/v3";
+
+
 
 export default function LoginPage() {
   const [isPending, startTransition] = useTransition()
@@ -98,6 +101,12 @@ export default function LoginPage() {
 
           </form>
         </CardContent>
+        <CardFooter>
+         <p className="text-center mx-auto">
+          Don't have an account? <Link href="/auth/signup" className="text-primary hover:underline"> Sign Up</Link>
+          </p>
+          
+        </CardFooter>
       </Card>
       
       </>
