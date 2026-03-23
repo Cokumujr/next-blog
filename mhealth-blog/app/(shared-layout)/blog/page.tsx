@@ -4,8 +4,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 import { fetchQuery } from "convex/nextjs";
+import { cacheLife, cacheTag } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Metadata } from "next/types";
 import { Suspense } from "react";
 
@@ -31,15 +33,19 @@ export default function blogListPage() {
         </p>
       </div>
 
-      <Suspense fallback={<SkeletonUI />} >
+      {/* <Suspense fallback={<SkeletonUI />} > */}
         <BlogList />
-        </Suspense>
+        {/* </Suspense> */}
       
     </div>
   );
 }
 
 async function BlogList() {
+  "use cache";
+  cacheLife("hours")
+  cacheTag("blog")
+  // await connection();
   const data = await fetchQuery(api.posts.getPosts)
   
   return (

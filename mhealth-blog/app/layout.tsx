@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { getToken } from "@/lib/auth-server";
 import { Toaster } from "@/components/ui/sonner";
+import { Suspense } from "react";
+import { connection } from "next/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +29,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token = await getToken();
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -35,15 +37,27 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <main className="max-w-7xl mx-auto w-full px-4 md:px-6 lg:px-8">
-        
-            <ConvexClientProvider initialToken={token} >
+            <Suspense>
+
+            <ConvexProvider >
               {children}
-            </ConvexClientProvider>
+            </ConvexProvider>
+            </Suspense>
             <Toaster closeButton  expand={true} visibleToasts={3}/>
 
           </main>
         </ThemeProvider>
       </body>
     </html>
+  );
+} 
+
+async function ConvexProvider({ children }: { children: React.ReactNode }) {
+  await connection();
+  const token = await getToken();
+  return (
+    <ConvexClientProvider initialToken={token}>
+      {children}
+    </ConvexClientProvider>
   );
 }

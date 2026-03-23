@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   // {whitelist unsplash.com}
+  cacheComponents: true,
   images: {
     remotePatterns: [
       {

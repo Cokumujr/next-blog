@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 type PostPageProps = {
     params: Promise<{
@@ -45,9 +46,11 @@ export default async function blogPostPage({ params }: PostPageProps) {
          preloadQuery(api.comments.getCommentsByPostById, { postId }),
         fetchQuery(api.presence.getUserId, {} , {token})
     ])
-   
-    
 
+    if (!userId) {
+        return redirect("/auth/login");
+    }
+   
     if (!post) {
         return (
             <div className="max-w-3xl mx-auto py-8 px-4 animate-in fade-in duration-500 relative ">
@@ -84,9 +87,6 @@ export default async function blogPostPage({ params }: PostPageProps) {
                 {userId && <PostPresence roomId={post._id} userId={userId} />}
 
                 </div>
-
-
-                
 
                 <p className="text-lg leading-relaxed text-foreground/90 mb-6 whitespace-pre-wrap">
                     {post.body}

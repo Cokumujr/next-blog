@@ -4,6 +4,7 @@ import { getToken } from "@/lib/auth-server";
 import { fetchMutation } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { updateTag } from "next/cache";
 
 type PostSchema = {
   title: string;
@@ -27,6 +28,7 @@ export async function createBlogAction(values: PostSchema) {
       { token },
     );
 
+    updateTag("blog")
     return { success: true };
   } catch (error: unknown) {
     if (error instanceof Error) {
