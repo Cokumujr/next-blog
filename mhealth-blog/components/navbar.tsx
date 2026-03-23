@@ -1,14 +1,26 @@
+"use client";
+
 import Link from "next/link";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { ThemeToggle } from "./themeToggle";
+import { useConvexAuth } from "convex/react";
+import { is } from "zod/locales";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { SearchInput } from "./SearchInput";
 
 export function Navbar() {
+    const { isAuthenticated, isLoading } = useConvexAuth();
+    const router = useRouter();
+
+
     return (
         <nav className="w-full flex items-center justify-between py-6">
             <div className="flex items-center space-x-2">
                 <Link href="/">
                 <h1 className="text-3xl font-bold">
-                <span className="text-blue-500">Nadra</span>
+                <span className="text-primary">Nadra</span>
                 </h1>
                 </Link>
             </div>
@@ -18,7 +30,7 @@ export function Navbar() {
                         Home
                     </Link>
                     <Link href="/blog" className={ buttonVariants({ variant: "ghost" ,size:"lg"})}>
-                        Blog
+                        Blogs
                     </Link>
                     <Link href="/create" className={ buttonVariants({ variant: "ghost",size:"lg" })}>
                         Create
@@ -28,13 +40,34 @@ export function Navbar() {
             
 
             <div className="flex items-center gap-2">
-                <Link href="/auth/signup" className={ buttonVariants({ variant: "outline" ,size:"lg"})}>
-                    Sign Up
-                </Link>
-                <Link href="/auth/login" className={ buttonVariants({ variant: "default",size:"lg" })}>
+                <div className="hidden md:block mr-2">
+                    <SearchInput />
                     
-                    Login
-                </Link>
+                </div>
+                {isLoading ? null : isAuthenticated ? (
+                    <Button onClick={() => authClient.signOut({
+                        fetchOptions: {
+                            onSuccess: () => {
+                                toast.success("Logged out successfully");
+                                router.push("/");
+                            },
+                            onError: (error) => {
+                                toast.error(error.error.message || "Failed to log out");
+                            }
+                        }
+                    })}>
+                        Logout
+                    </Button>
+                ) : (
+                    <>
+                        <Link href="/auth/signup" className={buttonVariants({ variant: "outline", size: "lg" })}>
+                            Sign Up
+                        </Link>
+                        <Link href="/auth/login" className={buttonVariants({ variant: "default", size: "lg" })}>
+                            Login
+                        </Link>
+                    </>
+                )}
                 <ThemeToggle />
             </div>
             
